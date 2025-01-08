@@ -15,6 +15,9 @@ exports.s1_preproc = function(params) {
   
   /************************  
    * 0. CHECK PARAMETERS  
+
+// dudas: aquí el formato esta en DB. ¿Debo ajustarlo desde aquí a "LINEAR" o se puede ajustar directamente en GEE?
+
   ************************/
   if (params.ORBIT === undefined) params.ORBIT = 'BOTH';
   if (params.SPECKLE_FILTER === undefined) params.SPECKLE_FILTER = "GAMMA MAP";
