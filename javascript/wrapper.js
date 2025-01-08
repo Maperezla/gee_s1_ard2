@@ -23,7 +23,7 @@ exports.s1_preproc = function(params) {
   if (params.TERRAIN_FLATTENING_ADDITIONAL_LAYOVER_SHADOW_BUFFER === undefined) params.TERRAIN_FLATTENING_ADDITIONAL_LAYOVER_SHADOW_BUFFER = 0;
   if (params.FORMAT === undefined) params.FORMAT = 'DB';
   if (params.DEM === undefined) params.DEM = ee.Image('USGS/SRTMGL1_003');
-  if (params.POLARIZATION === undefined) params.POLARIZATION = 'VVVH';
+  if (params.POLARIZATION === undefined) params.POLARIZATION = 'HHHV';
   if (params.APPLY_ADDITIONAL_BORDER_NOISE_CORRECTION === undefined) params.APPLY_ADDITIONAL_BORDER_NOISE_CORRECTION = true;
   if (params.APPLY_TERRAIN_FLATTENING===undefined) params.APPLY_TERRAIN_FLATTENING = true;
   if (params.APPLY_SPECKLE_FILTERING===undefined) params.APPLY_SPECKLE_FILTERING = true; 
@@ -36,7 +36,7 @@ exports.s1_preproc = function(params) {
        throw new Error("Parameter ORBIT not correctly defined")
   } 
   
-  var pol_required = ['VV', 'VH', 'VVVH']
+  var pol_required = ['HH', 'HV', 'HHHV']
   if (notContains(pol_required, params.POLARIZATION)) {
        throw new Error("Parameter POLARIZATION not correctly defined")
   } 
@@ -78,19 +78,19 @@ exports.s1_preproc = function(params) {
       .filterDate(params.START_DATE, params.STOP_DATE)
       .filterBounds(params.GEOMETRY);
   
-  if (params.POLARIZATION == 'VV') {
-    s1 = s1.filter(ee.Filter.listContains('transmitterReceiverPolarisation', 'VV'))
+  if (params.POLARIZATION == 'HH') {
+    s1 = s1.filter(ee.Filter.listContains('transmitterReceiverPolarisation', 'HH'))
   } else {
-    s1 = s1.filter(ee.Filter.listContains('transmitterReceiverPolarisation', 'VH'))
+    s1 = s1.filter(ee.Filter.listContains('transmitterReceiverPolarisation', 'HV'))
   }
   
   //select orbit
   if (params.ORBIT !== 'BOTH'){s1 = s1.filter(ee.Filter.eq('orbitProperties_pass', params.ORBIT))}
   
   //select polarization
-  if (params.POLARIZATION=='VV') { s1 = s1.select(['VV','angle'])}
-  else if (params.POLARIZATION=='VH') {s1 = s1.select(['VH','angle'])}
-  else if (params.POLARIZATION=='VVVH') {s1 = s1.select(['VV', 'VH', 'angle'])}
+  if (params.POLARIZATION=='HH') { s1 = s1.select(['HH','angle'])}
+  else if (params.POLARIZATION=='HV') {s1 = s1.select(['HV','angle'])}
+  else if (params.POLARIZATION=='HHHV') {s1 = s1.select(['HH', 'HV', 'angle'])}
   
   print('Number of images in collection: ', s1.size());
   
